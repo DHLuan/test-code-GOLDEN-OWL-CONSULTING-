@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import ProductList from './components/ProductList';
 import Cart from './components/Cart';
-import './assets/test.css';;
+import './assets/test.css';
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   // Hàm để thêm sản phẩm vào giỏ hàng
   const addToCart = (product) => {
     const existingItem = cartItems.find((item) => item.id === product.id);
+    setTotalAmount((prevTotalAmount) => prevTotalAmount + product.price);
 
     if (existingItem) {
       setCartItems((prevCartItems) =>
@@ -31,6 +34,11 @@ function App() {
     setCartItems((prevCartItems) =>
       prevCartItems.filter((item) => item.id !== product.id)
     );
+  
+    setTotalAmount((prevTotalAmount) => {
+      const updatedTotalAmount = prevTotalAmount - product.price * product.quantity;
+      return updatedTotalAmount >= 0 ? updatedTotalAmount : 0;
+    });
   };
 
   // Hàm để tăng số lượng sản phẩm
@@ -40,6 +48,8 @@ function App() {
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
     });
+  
+    setTotalAmount((prevTotalAmount) => prevTotalAmount + product.price);
   };
 
   // Hàm để giảm số lượng sản phẩm
@@ -51,6 +61,8 @@ function App() {
           : item
       );
     });
+  
+    setTotalAmount((prevTotalAmount) => prevTotalAmount - product.price);
   };
 
   // Lưu giỏ hàng vào localStorage sau mỗi lần thay đổi
@@ -68,12 +80,14 @@ function App() {
 
   return (
     <div className="App_mainContent_12BYb" style={{ marginRight: '50px' }}>
-      <ProductList addToCart={addToCart} />
+      <ProductList addToCart={addToCart} totalAmount={totalAmount}/>
       <Cart
         cartItems={cartItems}
         removeFromCart={removeFromCart}
         increaseQuantity={increaseQuantity}
         decreaseQuantity={decreaseQuantity}
+        totalAmount={totalAmount}
+
       />
     </div>
   );
