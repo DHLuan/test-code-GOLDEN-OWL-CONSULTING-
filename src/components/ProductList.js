@@ -29,7 +29,7 @@ function ProductList({ addToCart }) {
                 </div>
               </button>
 
-              <button onClick={() => addToCart(product)}>Add to Cart</button>
+              <button onClick={() => addToCart(product)}>Add to Cartaa</button>
             </div>
           </div>
         ))}
